@@ -82,8 +82,8 @@ WSGI_APPLICATION = 'meusite.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default='postgresql://postgres:mangastraquinas@db.njombjtatyitumivuijo.supabase.co:5432/postgres',
+    'default': dj_database_url.parse(
+        'postgresql://postgres.njombjtatyitumivuijo:mangastraquinas@aws-1-eu-west-1.pooler.supabase.com:6543/postgres'
         conn_max_age=600,
         ssl_require=True
     )
