@@ -1,6 +1,6 @@
 {
     "builds": [{
-        "src": "MangasTraquinas/wsgi.py",
+        "src": "meusite/wsgi.py",
         "use": "@vercel/python",
         "config": { "maxLambdaSize": "15mb", "runtime": "python3.9" }
     }],
@@ -11,7 +11,7 @@
         },
         {
             "src": "/(.*)",
-            "dest": "MangasTraquinas/wsgi.py"
+            "dest": "meusite/wsgi.py"
         }
     ]
 }
