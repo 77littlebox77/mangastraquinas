@@ -1,68 +1,100 @@
-{% extends 'base_manager.html' %}
-{% load widget_tweaks %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto mt-10 pb-20">
+<div class="max-w-6xl mx-auto px-6 py-10">
     
-    <div class="bg-black/60 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+    <a href="{% url 'home' %}" class="inline-flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-zippy-cyan mb-8 transition">
+        <i class="fas fa-arrow-left"></i> Voltar à loja
+    </a>
 
-        <h2 class="text-3xl font-bold text-white mb-8 relative z-10">{{ titulo }}</h2>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
         
-        <form method="post" enctype="multipart/form-data" class="space-y-6 relative z-10">
-            {% csrf_token %}
-
-            <div>
-                <label class="block text-sm font-bold text-gray-300 mb-2 uppercase tracking-wider">Nome do Produto</label>
-                {% render_field form.nome class="w-full bg-slate-800/50 border border-white/10 text-white rounded-xl px-4 py-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/50 outline-none transition placeholder-gray-500" placeholder="Ex: Casaco Quentinho" %}
+        <div class="space-y-4">
+            <div class="bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 shadow-sm relative group h-[500px]">
+                {% if produto.imagem %}
+                    <img id="mainImage" src="{{ produto.imagem.url }}" class="w-full h-full object-cover object-center transform transition duration-500 group-hover:scale-105">
+                {% else %}
+                    <div class="flex items-center justify-center h-full text-gray-300 text-6xl">🧸</div>
+                {% endif %}
             </div>
 
-            <div class="grid grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-sm font-bold text-gray-300 mb-2 uppercase tracking-wider">Preço (€)</label>
-                    {% render_field form.preco class="w-full bg-slate-800/50 border border-white/10 text-white rounded-xl px-4 py-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/50 outline-none transition placeholder-gray-500" placeholder="0.00" %}
-                </div>
-
-                <div>
-                    <label class="block text-sm font-bold text-gray-300 mb-2 uppercase tracking-wider">Categoria</label>
-                    {% render_field form.categoria class="w-full bg-slate-800/50 border border-white/10 text-white rounded-xl px-4 py-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/50 outline-none transition cursor-pointer" %}
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-sm font-bold text-gray-300 mb-2 uppercase tracking-wider">Idade / Tamanho</label>
-                {% render_field form.idade class="w-full bg-slate-800/50 border border-white/10 text-white rounded-xl px-4 py-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/50 outline-none transition placeholder-gray-500" placeholder="Ex: 4 Anos, 6-9 Meses..." %}
-                <p class="text-xs text-gray-500 mt-1">Isto vai aparecer numa etiqueta amarela no produto.</p>
-            </div>
-
-            <div>
-                <label class="block text-sm font-bold text-gray-300 mb-2 uppercase tracking-wider">Descrição Detalhada</label>
-                {% render_field form.descricao class="w-full bg-slate-800/50 border border-white/10 text-white rounded-xl px-4 py-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/50 outline-none transition placeholder-gray-500 h-32" placeholder="Escreve aqui os detalhes do produto..." rows="4" %}
-            </div>
-
-            <div>
-                <label class="block text-sm font-bold text-gray-300 mb-2 uppercase tracking-wider">Imagem de Capa</label>
-                <div class="border-2 border-dashed border-white/20 rounded-xl p-6 text-center hover:border-purple-500/50 transition bg-slate-800/30">
-                    {% render_field form.imagem class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer" %}
-                </div>
-            </div>
-
-            <div class="mt-6 p-5 bg-purple-900/20 border border-purple-500/30 rounded-xl">
-                <label class="block text-sm font-bold text-purple-200 mb-2 uppercase tracking-wider">📸 Galeria de Imagens Extra</label>
-                <p class="text-xs text-gray-400 mb-4">Seleciona várias fotos ao mesmo tempo (Ctrl + Clique) para criar a galeria.</p>
-                
-                <div class="border-2 border-dashed border-purple-500/30 rounded-xl p-4 hover:bg-purple-900/30 transition">
-                    {% render_field form.imagens_galeria class="block w-full text-sm text-purple-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-purple-600 file:text-white hover:file:bg-purple-500 cursor-pointer" %}
-                </div>
-            </div>
-
-            <div class="flex items-center justify-end gap-4 mt-8 pt-4 border-t border-white/10">
-                <a href="{% url 'dashboard' %}" class="text-gray-400 hover:text-white font-medium transition px-4 py-2">Cancelar</a>
-                <button type="submit" class="bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-purple-900/20 transform hover:-translate-y-1 transition duration-200">
-                    Guardar Produto
+            <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                {% if produto.imagem %}
+                <button onclick="mudarImagem('{{ produto.imagem.url }}')" class="w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden border-2 border-transparent hover:border-[var(--zippy-cyan)] transition focus:border-[var(--zippy-cyan)] bg-gray-50">
+                    <img src="{{ produto.imagem.url }}" class="w-full h-full object-cover">
                 </button>
+                {% endif %}
+
+                {% for img_extra in produto.imagens_extra.all %}
+                <button onclick="mudarImagem('{{ img_extra.imagem.url }}')" class="w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden border-2 border-transparent hover:border-[var(--zippy-cyan)] transition focus:border-[var(--zippy-cyan)] bg-gray-50">
+                    <img src="{{ img_extra.imagem.url }}" class="w-full h-full object-cover">
+                </button>
+                {% endfor %}
             </div>
-        </form>
+        </div>
+
+        <div class="lg:sticky lg:top-24">
+            
+            <div class="flex flex-wrap gap-3 mb-6">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 text-zippy-dark text-xs font-bold uppercase tracking-wide border border-blue-100">
+                    {% if 'menino' in produto.categoria or 'rapaz' in produto.categoria %}👦{% else %}👧{% endif %}
+                    {{ produto.get_categoria_display }}
+                </span>
+                
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--zippy-yellow)] text-zippy-dark text-xs font-bold uppercase tracking-wide shadow-sm">
+                    📏 {{ produto.idade }}
+                </span>
+            </div>
+
+            <h1 class="text-4xl font-bold text-gray-800 mb-2 leading-tight">{{ produto.nome }}</h1>
+            
+            <div class="flex items-center gap-4 mb-8">
+                <span class="text-3xl font-bold text-gray-900">€ {{ produto.preco }}</span>
+                <div class="flex text-yellow-400 text-sm">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star text-gray-200"></i>
+                </div>
+            </div>
+
+            <form action="{% url 'adicionar_carrinho' produto.id %}" method="POST" class="flex flex-col gap-3 mb-10">
+                {% csrf_token %}
+                <button type="submit" class="w-full zippy-yellow py-4 rounded-full text-lg shadow-lg hover:shadow-xl transition transform active:scale-95 flex justify-center items-center gap-3">
+                    <span>Adicionar ao Carrinho</span>
+                    <i class="fas fa-shopping-basket"></i>
+                </button>
+                <p class="text-center text-xs text-gray-400 font-medium">🚚 Portes grátis para Portugal Continental</p>
+            </form>
+
+            <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+                <h3 class="text-gray-800 font-bold text-sm uppercase tracking-widest mb-3">Detalhes</h3>
+                <div class="prose prose-sm text-gray-500 leading-relaxed">
+                    {% if produto.descricao %}
+                        {{ produto.descricao|linebreaks }}
+                    {% else %}
+                        <p>Roupa confortável pensada para as brincadeiras do dia-a-dia.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if user.is_staff %}
+            <div class="mt-6 text-center">
+                <a href="{% url 'editar_produto' produto.id %}" class="text-xs font-bold text-gray-400 hover:text-zippy-cyan underline">
+                    Editar este produto (Admin)
+                </a>
+            </div>
+            {% endif %}
+
+        </div>
     </div>
 </div>
+
+<script>
+    function mudarImagem(url) {
+        const img = document.getElementById('mainImage');
+        img.style.opacity = '0.5';
+        setTimeout(() => {
+            img.src = url;
+            img.style.opacity = '1';
+        }, 150);
+    }
+</script>
 {% endblock %}

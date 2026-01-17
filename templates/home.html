@@ -2,16 +2,16 @@
 
 {% block content %}
 <div class="max-w-[1440px] mx-auto px-6 py-8">
-    <div class="bg-[#FFFAE5] rounded-[3rem] p-10 md:p-20 text-center relative overflow-hidden border-4 border-white shadow-xl shadow-yellow-100">
-        <div class="absolute top-10 left-10 w-20 h-20 bg-[#FFD028] rounded-full opacity-50 blur-xl"></div>
-        <div class="absolute bottom-10 right-10 w-32 h-32 bg-[#0087CA] rounded-full opacity-20 blur-2xl"></div>
+    <div class="bg-[#FFFBEB] rounded-[3rem] p-10 md:p-20 text-center relative overflow-hidden border-4 border-white shadow-xl shadow-yellow-100/50">
+        <div class="absolute top-10 left-10 w-20 h-20 bg-[var(--zippy-yellow)] rounded-full opacity-50 blur-xl"></div>
+        <div class="absolute bottom-10 right-10 w-32 h-32 bg-[var(--zippy-cyan)] rounded-full opacity-20 blur-2xl"></div>
         
         <div class="relative z-10">
             <span class="bg-white px-4 py-1 rounded-full text-xs font-bold tracking-widest text-gray-400 mb-4 inline-block">NOVA COLEÇÃO</span>
-            <h2 class="text-4xl md:text-6xl font-bold text-gray-800 mb-6 leading-tight">Diversão em cada<br><span class="text-[#0087CA]">detalhe.</span></h2>
+            <h2 class="text-4xl md:text-6xl font-bold text-gray-800 mb-6 leading-tight">Diversão em cada<br><span class="text-zippy-dark">detalhe.</span></h2>
             <p class="text-lg text-gray-600 mb-8 max-w-xl mx-auto font-medium">Roupa confortável e cheia de estilo para as maiores aventuras do dia-a-dia.</p>
             <div class="flex justify-center gap-4">
-                <a href="#" class="zippy-yellow px-8 py-4 rounded-full font-bold shadow-lg hover:shadow-xl transition transform hover:-translate-y-1">Ver Coleção</a>
+                <a href="#" class="zippy-yellow px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition transform hover:-translate-y-1">Ver Coleção</a>
                 <a href="#" class="bg-white text-gray-700 border-2 border-gray-100 px-8 py-4 rounded-full font-bold hover:border-gray-300 transition">Saber Mais</a>
             </div>
         </div>
@@ -21,7 +21,7 @@
 <div class="max-w-[1440px] mx-auto px-6 py-12">
     <div class="flex items-center justify-between mb-8">
         <h3 class="text-2xl font-bold text-gray-800">Destaques da Semana</h3>
-        <a href="#" class="text-[#0087CA] font-bold text-sm hover:underline">Ver tudo &rarr;</a>
+        <a href="#" class="text-zippy-cyan font-bold text-sm hover:underline">Ver tudo &rarr;</a>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -42,30 +42,27 @@
                         </span>
                         
                         {% if produto.idade %}
-                        <span class="bg-[#FFD028] px-3 py-1 rounded-full text-[10px] font-bold text-gray-900 shadow-sm border border-yellow-400/20">
+                        <span class="bg-[var(--zippy-yellow)] px-3 py-1 rounded-full text-[10px] font-bold text-[var(--zippy-dark-blue)] shadow-sm border border-yellow-400/20">
                             {{ produto.idade }}
                         </span>
                         {% endif %}
                     </div>
+
                     <div class="absolute bottom-4 right-4 translate-y-12 group-hover:translate-y-0 transition duration-300">
-                        <button class="w-10 h-10 rounded-full bg-[#0087CA] text-white shadow-lg flex items-center justify-center hover:bg-[#0070a8]">
+                        <button class="w-10 h-10 rounded-full bg-[var(--zippy-dark-blue)] text-white shadow-lg flex items-center justify-center hover:bg-blue-700">
                             <i class="fas fa-plus"></i>
                         </button>
                     </div>
                 </div>
 
                 <div class="p-5 flex flex-col flex-grow">
-                    <h3 class="text-lg font-bold text-gray-800 mb-1 leading-tight group-hover:text-[#0087CA] transition">{{ produto.nome }}</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-1 leading-tight group-hover:text-zippy-dark transition">{{ produto.nome }}</h3>
                     <p class="text-sm text-gray-400 font-medium mb-4 line-clamp-2">Conforto total para brincar.</p>
                     
                     <div class="mt-auto flex items-center justify-between">
                         <span class="text-xl font-bold text-gray-900">€ {{ produto.preco }}</span>
                         <div class="flex text-yellow-400 text-xs">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star text-gray-200"></i>
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star text-gray-200"></i>
                         </div>
                     </div>
                 </div>
