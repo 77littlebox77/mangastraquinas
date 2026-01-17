@@ -129,6 +129,12 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# --- ADICIONA ISTO SE NÃO TIVERES ---
+# Isto diz ao Django: "Procura imagens também na pasta 'static' da raiz"
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Se tiveres MEDIA_URL (para as imagens dos produtos)
