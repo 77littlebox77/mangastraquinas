@@ -127,14 +127,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
+# ... (outras configurações acima)
+
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# --- ADICIONA ISTO SE NÃO TIVERES ---
-# Isto diz ao Django: "Procura imagens também na pasta 'static' da raiz"
+# ADICIONA ESTE BLOCO (Isto diz: "Procura imagens na pasta static da raiz"):
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+# Configuração para a Vercel (WhiteNoise)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Se tiveres MEDIA_URL (para as imagens dos produtos)

@@ -1,41 +1,48 @@
 {% extends 'base.html' %}
-{% load widget_tweaks %}
+{% load static %}
 
 {% block content %}
-<div class="flex flex-col items-center justify-center py-20 px-4 bg-[#FFFAE5]/30"> <div class="w-full max-w-md bg-white p-10 rounded-[2.5rem] shadow-xl border border-white">
-        
-        <div class="text-center mb-8">
-            <div class="w-16 h-16 bg-[#FFD028] rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-sm">
-                👋
-            </div>
-            <h1 class="text-2xl font-bold text-gray-800">Olá de novo!</h1>
-            <p class="text-gray-400 text-sm">Pronto para mais compras traquinas?</p>
+<div class="flex items-center justify-center min-h-[80vh] bg-white">
+    
+    <div class="w-full max-w-md p-8">
+        <div class="text-center mb-10">
+            <img src="{% static 'img/logo.jpg' %}" alt="Mangas Traquinas" class="h-24 w-auto mx-auto mb-6 rounded-2xl shadow-sm hover:scale-105 transition duration-500">
+            
+            <h2 class="text-3xl font-bold text-gray-800 mb-2 tracking-tight">Olá de novo!</h2>
+            <p class="text-gray-400 font-medium">Pronto para mais compras traquinas?</p>
         </div>
-        
-        <form method="post" class="space-y-4">
+
+        <form method="post" class="space-y-6">
             {% csrf_token %}
             
             {% if form.errors %}
-                <div class="p-4 bg-red-50 text-red-500 text-sm rounded-2xl text-center font-bold">
-                    Ups! Algo não bate certo. Tenta de novo.
+                <div class="bg-red-50 text-red-500 p-4 rounded-2xl text-sm font-bold border border-red-100 flex items-center gap-3">
+                    <i class="fas fa-exclamation-circle text-xl"></i>
+                    <div>Username ou password incorretos.</div>
                 </div>
             {% endif %}
 
-            <div>
-                {% render_field form.username class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-5 py-4 focus:bg-white focus:border-[#0087CA] focus:ring-4 focus:ring-blue-50 outline-none transition font-medium" placeholder="O teu Username" %}
-            </div>
-            <div>
-                {% render_field form.password class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-5 py-4 focus:bg-white focus:border-[#0087CA] focus:ring-4 focus:ring-blue-50 outline-none transition font-medium" placeholder="A tua Password" %}
+            <div class="space-y-4">
+                <div>
+                    <input type="text" name="username" placeholder="O teu Username" required 
+                        class="w-full bg-gray-50 border border-gray-100 text-gray-800 text-sm rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-300 block p-4 outline-none transition font-medium placeholder-gray-400">
+                </div>
+                <div>
+                    <input type="password" name="password" placeholder="A tua Password" required 
+                        class="w-full bg-gray-50 border border-gray-100 text-gray-800 text-sm rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-300 block p-4 outline-none transition font-medium placeholder-gray-400">
+                </div>
             </div>
 
-            <button type="submit" class="w-full zippy-yellow text-gray-900 font-bold py-4 rounded-2xl shadow-md hover:shadow-lg transition transform active:scale-95 mt-2">
+            <button type="submit" class="w-full zippy-yellow text-[var(--zippy-dark-blue)] font-bold rounded-2xl text-sm px-5 py-4 text-center shadow-lg shadow-yellow-200 hover:shadow-xl hover:-translate-y-1 transition duration-300">
                 Entrar na Conta
             </button>
         </form>
 
-        <p class="mt-8 text-center text-sm text-gray-400 font-medium">
-            Novo por aqui? <a href="{% url 'registar' %}" class="text-[#0087CA] font-bold hover:underline">Cria uma conta grátis.</a>
-        </p>
+        <div class="mt-8 text-center">
+            <p class="text-sm text-gray-400 font-medium">
+                Novo por aqui? <a href="{% url 'registar' %}" class="text-zippy-dark hover:underline font-bold">Cria uma conta grátis.</a>
+            </p>
+        </div>
     </div>
 </div>
 {% endblock %}

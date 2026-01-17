@@ -5,38 +5,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mangas Traquinas</title>
-    <link rel="icon" type="image/png" href="{% static 'img/logo_oficial.png' %}">
+    <link rel="icon" type="image/jpeg" href="{% static 'img/logo.jpg' %}">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* --- PALETA DE CORES NOVA (Baseada na Imagem) --- */
         :root {
-            --zippy-dark-blue: #0047BB; /* Azul escuro do texto */
-            --zippy-cyan: #00B5E2;      /* Azul claro do pingo/onda */
-            --zippy-yellow: #FFDA24;    /* Amarelo vibrante */
+            --zippy-dark-blue: #0047BB;
+            --zippy-cyan: #00B5E2;
+            --zippy-yellow: #FFDA24;
         }
-
         body { font-family: 'Quicksand', sans-serif; background-color: #ffffff; color: #374151; }
-        
-        /* Botões e Elementos Amarelos */
         .zippy-yellow { background-color: var(--zippy-yellow); color: var(--zippy-dark-blue); font-weight: 700; }
-        .zippy-yellow:hover { background-color: #EAC820; } /* Um pouco mais escuro no hover */
-        
-        /* Links da Navegação */
+        .zippy-yellow:hover { background-color: #EAC820; }
         .nav-link { 
             font-weight: 700; font-size: 15px; color: #4B5563; 
             transition: all 0.2s; padding: 8px 16px; border-radius: 99px;
         }
         .nav-link:hover { color: var(--zippy-dark-blue); background-color: #F3F4F6; }
-
-        /* Utilitários de Texto */
         .text-zippy-dark { color: var(--zippy-dark-blue); }
         .text-zippy-cyan { color: var(--zippy-cyan); }
-        
-        /* Remove a barra de scroll nas miniaturas */
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -51,8 +41,8 @@
         <div class="max-w-[1440px] mx-auto px-6 h-20 flex items-center justify-between">
             
             <a href="{% url 'home' %}" class="flex items-center group">
-                <img src="{% static 'img/logo_oficial.png' %}" alt="Mangas Traquinas Logo" class="h-10 w-auto group-hover:scale-105 transition duration-300">
-                </a>
+                <img src="{% static 'img/logo.jpg' %}" alt="Logo" class="h-12 w-auto group-hover:scale-105 transition duration-300">
+            </a>
 
             <div class="hidden md:flex gap-4">
                 <a href="{% url 'home' %}?categoria=bebe" class="nav-link">Bebé 👶</a>
@@ -61,7 +51,6 @@
             </div>
 
             <div class="flex items-center gap-4">
-                
                 {% if user.is_staff %}
                     <a href="{% url 'dashboard' %}" class="text-xs font-bold border-2 border-gray-200 px-3 py-1.5 rounded-full hover:border-gray-400 text-gray-500 transition">⚙️ Manager</a>
                 {% endif %}
@@ -75,7 +64,6 @@
                         <button class="w-10 h-10 rounded-full bg-blue-50 text-[var(--zippy-dark-blue)] hover:bg-[var(--zippy-dark-blue)] hover:text-white transition flex items-center justify-center font-bold">
                             {{ user.username|make_list|first|upper }}
                         </button>
-                        
                         <div class="absolute right-0 top-full pt-2 w-56 hidden group-hover:block z-50">
                             <div class="bg-white border border-gray-100 shadow-xl rounded-2xl overflow-hidden py-2">
                                 <div class="px-5 py-3 border-b border-gray-50">
