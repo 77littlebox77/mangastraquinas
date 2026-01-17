@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="flex flex-col items-center justify-center py-20 px-4 bg-[#FFFAE5]/30"> <div class="w-full max-w-md bg-white p-10 rounded-[2.5rem] shadow-xl border border-white">
+        
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 bg-[#FFD028] rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-sm">
+                👋
+            </div>
+            <h1 class="text-2xl font-bold text-gray-800">Olá de novo!</h1>
+            <p class="text-gray-400 text-sm">Pronto para mais compras traquinas?</p>
+        </div>
+        
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+                <div class="p-4 bg-red-50 text-red-500 text-sm rounded-2xl text-center font-bold">
+                    Ups! Algo não bate certo. Tenta de novo.
+                </div>
+            {% endif %}
+
+            <div>
+                {% render_field form.username class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-5 py-4 focus:bg-white focus:border-[#0087CA] focus:ring-4 focus:ring-blue-50 outline-none transition font-medium" placeholder="O teu Username" %}
+            </div>
+            <div>
+                {% render_field form.password class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-5 py-4 focus:bg-white focus:border-[#0087CA] focus:ring-4 focus:ring-blue-50 outline-none transition font-medium" placeholder="A tua Password" %}
+            </div>
+
+            <button type="submit" class="w-full zippy-yellow text-gray-900 font-bold py-4 rounded-2xl shadow-md hover:shadow-lg transition transform active:scale-95 mt-2">
+                Entrar na Conta
+            </button>
+        </form>
+
+        <p class="mt-8 text-center text-sm text-gray-400 font-medium">
+            Novo por aqui? <a href="{% url 'registar' %}" class="text-[#0087CA] font-bold hover:underline">Cria uma conta grátis.</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

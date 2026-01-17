@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-6 py-10">
+    
+    <a href="{% url 'home' %}" class="inline-flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-[#0087CA] mb-8 transition">
+        <i class="fas fa-arrow-left"></i> Voltar à loja
+    </a>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+        
+        <div class="space-y-4">
+            <div class="bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 shadow-sm relative group h-[500px]">
+                {% if produto.imagem %}
+                    <img id="mainImage" src="{{ produto.imagem.url }}" class="w-full h-full object-cover object-center transform transition duration-500 group-hover:scale-105">
+                {% else %}
+                    <div class="flex items-center justify-center h-full text-gray-300 text-6xl">🧸</div>
+                {% endif %}
+            </div>
+
+            <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                {% if produto.imagem %}
+                <button onclick="mudarImagem('{{ produto.imagem.url }}')" class="w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden border-2 border-transparent hover:border-[#0087CA] transition focus:border-[#0087CA] bg-gray-50">
+                    <img src="{{ produto.imagem.url }}" class="w-full h-full object-cover">
+                </button>
+                {% endif %}
+
+                {% for img_extra in produto.imagens_extra.all %}
+                <button onclick="mudarImagem('{{ img_extra.imagem.url }}')" class="w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden border-2 border-transparent hover:border-[#0087CA] transition focus:border-[#0087CA] bg-gray-50">
+                    <img src="{{ img_extra.imagem.url }}" class="w-full h-full object-cover">
+                </button>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="lg:sticky lg:top-24">
+            
+            <div class="flex flex-wrap gap-3 mb-6">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 text-[#0087CA] text-xs font-bold uppercase tracking-wide border border-blue-100">
+                    {% if 'menino' in produto.categoria or 'rapaz' in produto.categoria %}👦{% else %}👧{% endif %}
+                    {{ produto.get_categoria_display }}
+                </span>
+                
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FFD028] text-black text-xs font-bold uppercase tracking-wide shadow-sm">
+                    📏 {{ produto.idade }}
+                </span>
+            </div>
+
+            <h1 class="text-4xl font-bold text-gray-800 mb-2 leading-tight">{{ produto.nome }}</h1>
+            
+            <div class="flex items-center gap-4 mb-8">
+                <span class="text-3xl font-bold text-gray-900">€ {{ produto.preco }}</span>
+                <div class="flex text-yellow-400 text-sm">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star text-gray-200"></i>
+                </div>
+            </div>
+
+            <form action="{% url 'adicionar_carrinho' produto.id %}" method="POST" class="flex flex-col gap-3 mb-10">
+                {% csrf_token %}
+                <button type="submit" class="w-full bg-[#FFD028] text-black font-bold py-4 rounded-full text-lg hover:bg-[#EBC024] hover:shadow-lg transition transform active:scale-95 flex justify-center items-center gap-3">
+                    <span>Adicionar ao Carrinho</span>
+                    <i class="fas fa-shopping-basket"></i>
+                </button>
+                <p class="text-center text-xs text-gray-400 font-medium">🚚 Portes grátis para Portugal Continental</p>
+            </form>
+            <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+                <h3 class="text-gray-800 font-bold text-sm uppercase tracking-widest mb-3">Detalhes</h3>
+                <div class="prose prose-sm text-gray-500 leading-relaxed">
+                    {% if produto.descricao %}
+                        {{ produto.descricao|linebreaks }}
+                    {% else %}
+                        <p>Roupa confortável pensada para as brincadeiras do dia-a-dia.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if user.is_staff %}
+            <div class="mt-6 text-center">
+                <a href="{% url 'editar_produto' produto.id %}" class="text-xs font-bold text-gray-400 hover:text-[#0087CA] underline">
+                    Editar este produto (Admin)
+                </a>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function mudarImagem(url) {
+        // Efeito simples de fade
+        const img = document.getElementById('mainImage');
+        img.style.opacity = '0.5';
+        setTimeout(() => {
+            img.src = url;
+            img.style.opacity = '1';
+        }, 150);
+    }
+</script>
+{% endblock %}

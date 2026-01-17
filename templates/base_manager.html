@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja Manager ✨</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Outfit', sans-serif; }
+        
+        /* Variáveis CSS */
+        :root {
+            --bg-main: #f0fdf4;
+            --bg-card: #ffffff;
+            --bg-input: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --primary: #16a34a;
+            
+            /* Variáveis para o Degrade do Título */
+            --grad-start: #374151;
+            --grad-end: #000000;
+        }
+
+        /* Classes Utilitárias */
+        .theme-bg { background-color: var(--bg-main); transition: background-color 0.2s; }
+        .theme-card { background-color: var(--bg-card); transition: background-color 0.2s; }
+        
+        /* Input */
+        .theme-input {
+            background-color: var(--bg-input);
+            color: var(--text-main);
+            border: 1px solid rgba(128, 128, 128, 0.2);
+            transition: all 0.2s;
+        }
+        .theme-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(var(--primary), 0.2);
+        }
+
+        .theme-text { color: var(--text-main); transition: color 0.1s; }
+        .theme-text-muted { color: var(--text-muted); }
+        .theme-btn { background-color: var(--primary); color: white; transition: background-color 0.1s; }
+        .theme-btn:hover { filter: brightness(90%); }
+        .theme-border { border-color: var(--primary); }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* TÍTULO COM O EFEITO DEGRADE (CORRIGIDO) */
+        .titulo-degrade-original {
+            background-image: linear-gradient(to right, var(--grad-start), var(--grad-end));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        input[type="color"] {
+            -webkit-appearance: none; border: none; width: 100%; height: 35px;
+            border-radius: 6px; cursor: pointer; padding: 0; overflow: hidden; background: none;
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); }
+    </style>
+</head>
+<body class="theme-bg theme-text min-h-screen" onclick="fecharMenuSeClicarFora(event)">
+
+    <nav class="fixed w-full z-50 top-0">
+        <div class="glass shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-20 items-center">
+                    
+                    <div class="flex items-center gap-8">
+                        
+                        <div class="flex items-center gap-2">
+                            <div class="theme-btn p-2 rounded-xl shadow-lg">🛍️</div>
+                            <h1 class="text-2xl font-bold titulo-degrade-original">
+                                Loja<span class="font-light">Manager</span>
+                            </h1>
+                        </div>
+
+                        <div class="hidden md:flex space-x-6">
+                            <a href="{% url 'home' %}" class="theme-text font-medium hover:text-[var(--primary)] transition opacity-80 hover:opacity-100">Início</a>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'dashboard' %}" class="theme-text font-medium hover:text-[var(--primary)] transition opacity-80 hover:opacity-100">Gestão</a>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                    
+                    <div class="flex items-center gap-4">
+                        <div class="relative">
+                            <button id="btnTemas" onclick="toggleMenu(event)" class="text-2xl hover:scale-110 transition p-2 rounded-full hover:bg-black/5 active:scale-95">
+                                🎨
+                            </button>
+                            
+                            <div id="menuTemas" class="hidden absolute right-0 mt-4 w-80 bg-slate-900 rounded-2xl shadow-2xl shadow-black/50 border border-slate-700 p-5 animate-fade-in z-50 max-h-[80vh] overflow-y-auto text-gray-200">
+                                
+                                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Padrão</p>
+                                <div class="grid grid-cols-3 gap-2 mb-4">
+                                    <button onclick="mudarTema('original')" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-indigo-400 border border-slate-700 transition">Original</button>
+                                    <button onclick="mudarTema('hacker')" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-green-400 border border-slate-700 transition">Hacker</button>
+                                    <button onclick="mudarTema('natureza')" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-amber-200 border border-slate-700 transition">Natureza</button>
+                                </div>
+
+                                <div id="area-meus-perfis" class="hidden">
+                                    <hr class="border-slate-700 mb-3">
+                                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Os Meus Perfis</p>
+                                    <div id="lista-perfis" class="space-y-2 mb-4"></div>
+                                </div>
+
+                                <hr class="border-slate-700 mb-4">
+
+                                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3">Mesa de Mistura</p>
+                                
+                                <div class="grid grid-cols-2 gap-3 mb-4">
+                                    <div class="flex flex-col gap-1">
+                                        <label class="text-[10px] text-slate-400 font-bold uppercase">Fundo Pág.</label>
+                                        <input type="color" id="cor-fundo" oninput="atualizarAoVivo()">
+                                    </div>
+                                    <div class="flex flex-col gap-1">
+                                        <label class="text-[10px] text-slate-400 font-bold uppercase">Cartões</label>
+                                        <input type="color" id="cor-card" oninput="atualizarAoVivo()">
+                                    </div>
+                                    <div class="flex flex-col gap-1 col-span-2">
+                                        <label class="text-[10px] text-slate-400 font-bold uppercase">Caixas de Texto</label>
+                                        <input type="color" id="cor-input" class="w-full" oninput="atualizarAoVivo()">
+                                    </div>
+                                    <div class="flex flex-col gap-1">
+                                        <label class="text-[10px] text-slate-400 font-bold uppercase">Texto</label>
+                                        <input type="color" id="cor-texto" oninput="atualizarAoVivo()">
+                                    </div>
+                                    <div class="flex flex-col gap-1">
+                                        <label class="text-[10px] text-slate-400 font-bold uppercase">Destaque</label>
+                                        <input type="color" id="cor-primary" oninput="atualizarAoVivo()">
+                                    </div>
+                                </div>
+
+                                <div class="flex gap-2">
+                                    <input type="text" id="nome-novo-tema" placeholder="Nome do tema..." class="flex-1 px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-sm outline-none focus:ring-1 focus:ring-slate-400 text-gray-200 placeholder-slate-500">
+                                    <button onclick="guardarPerfil()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg shadow-md transition border border-slate-600">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if user.is_authenticated %}
+                            <span class="hidden md:block text-sm font-medium theme-text-muted">Olá, {{ user.username }}</span>
+                            <form action="{% url 'logout' %}" method="post" class="inline">
+                                {% csrf_token %}
+                                <button type="submit" class="bg-white/50 hover:bg-red-500 hover:text-white theme-text px-4 py-2 rounded-full text-sm font-bold transition border border-gray-200/50 shadow-sm">
+                                    Sair
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="h-24"></div>
+
+    <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <script>
+        const root = document.documentElement;
+        const menu = document.getElementById('menuTemas');
+        
+        const temasBase = {
+            original: { '--bg-main': '#eff6ff', '--bg-card': '#ffffff', '--bg-input': '#ffffff', '--text-main': '#1e293b', '--text-muted': '#64748b', '--primary': '#4f46e5' },
+            hacker:   { '--bg-main': '#0f172a', '--bg-card': '#1e293b', '--bg-input': '#334155', '--text-main': '#f8fafc', '--text-muted': '#94a3b8', '--primary': '#22c55e' },
+            natureza: { '--bg-main': '#fdfbf7', '--bg-card': '#ffffff', '--bg-input': '#fefce8', '--text-main': '#422006', '--text-muted': '#a8a29e', '--primary': '#65a30d' }
+        };
+
+        function toggleMenu(e) { e.stopPropagation(); menu.classList.toggle('hidden'); renderizarPerfisSalvos(); }
+        function fecharMenuSeClicarFora(e) {
+            if (!menu.classList.contains('hidden') && !e.target.closest('#menuTemas') && !e.target.closest('#btnTemas')) {
+                menu.classList.add('hidden');
+            }
+        }
+
+        // --- CÁLCULO DE LUMINÂNCIA (CORRIGIDO) ---
+        function getLuminancia(hex) {
+            const c = hex.substring(1); 
+            const rgb = parseInt(c, 16);
+            const r = (rgb >> 16) & 0xff;
+            const g = (rgb >>  8) & 0xff;
+            const b = (rgb >>  0) & 0xff;
+            return 0.2126 * r + 0.7152 * g + 0.0722 * b; 
+        }
+
+        function aplicarCores(cores) {
+            for (const [key, value] of Object.entries(cores)) { root.style.setProperty(key, value); }
+            
+            document.getElementById('cor-fundo').value = cores['--bg-main'];
+            document.getElementById('cor-card').value = cores['--bg-card'];
+            document.getElementById('cor-input').value = cores['--bg-input'] || '#ffffff';
+            document.getElementById('cor-texto').value = cores['--text-main'];
+            document.getElementById('cor-primary').value = cores['--primary'];
+
+            // Lógica do Degrade Dinâmico (SENSIBILIDADE PARA CASTANHOS)
+            const corFundo = cores['--bg-main'];
+            const luminancia = getLuminancia(corFundo);
+
+            // Ajustado para 128 para apanhar bem o castanho escuro
+            if (luminancia < 128) { 
+                root.style.setProperty('--grad-start', '#ffffff');
+                root.style.setProperty('--grad-end', '#cbd5e1'); // Cinza visível
+            } else {
+                root.style.setProperty('--grad-start', '#374151');
+                root.style.setProperty('--grad-end', '#000000');
+            }
+        }
+
+        function mudarTema(nome) {
+            if(temasBase[nome]) {
+                aplicarCores(temasBase[nome]);
+                localStorage.setItem('temaAtivo', JSON.stringify(temasBase[nome]));
+            }
+        }
+
+        function atualizarAoVivo() {
+            const cores = {
+                '--bg-main': document.getElementById('cor-fundo').value,
+                '--bg-card': document.getElementById('cor-card').value,
+                '--bg-input': document.getElementById('cor-input').value,
+                '--text-main': document.getElementById('cor-texto').value,
+                '--primary': document.getElementById('cor-primary').value,
+                '--text-muted': document.getElementById('cor-texto').value 
+            };
+            aplicarCores(cores);
+            localStorage.setItem('temaAtivo', JSON.stringify(cores));
+        }
+
+        function guardarPerfil() {
+            const nome = document.getElementById('nome-novo-tema').value;
+            if(!nome) { alert('Dá um nome ao tema!'); return; }
+            const coresAtuais = {
+                '--bg-main': document.getElementById('cor-fundo').value,
+                '--bg-card': document.getElementById('cor-card').value,
+                '--bg-input': document.getElementById('cor-input').value,
+                '--text-main': document.getElementById('cor-texto').value,
+                '--primary': document.getElementById('cor-primary').value,
+                '--text-muted': document.getElementById('cor-texto').value
+            };
+            let perfis = JSON.parse(localStorage.getItem('meusPerfis') || '[]');
+            perfis.push({ id: Date.now(), nome: nome, cores: coresAtuais });
+            localStorage.setItem('meusPerfis', JSON.stringify(perfis));
+            document.getElementById('nome-novo-tema').value = '';
+            renderizarPerfisSalvos();
+        }
+
+        function carregarPerfil(id) {
+            let perfis = JSON.parse(localStorage.getItem('meusPerfis') || '[]');
+            const perfil = perfis.find(p => p.id === id);
+            if(perfil) { aplicarCores(perfil.cores); localStorage.setItem('temaAtivo', JSON.stringify(perfil.cores)); }
+        }
+
+        function apagarPerfil(id) {
+            if(!confirm('Apagar?')) return;
+            let perfis = JSON.parse(localStorage.getItem('meusPerfis') || '[]');
+            perfis = perfis.filter(p => p.id !== id);
+            localStorage.setItem('meusPerfis', JSON.stringify(perfis));
+            renderizarPerfisSalvos();
+        }
+
+        function renderizarPerfisSalvos() {
+            const area = document.getElementById('area-meus-perfis');
+            const lista = document.getElementById('lista-perfis');
+            const perfis = JSON.parse(localStorage.getItem('meusPerfis') || '[]');
+            if (perfis.length === 0) { area.classList.add('hidden'); return; }
+            area.classList.remove('hidden'); lista.innerHTML = ''; 
+            perfis.forEach(p => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center justify-between bg-slate-800 p-2 rounded-lg border border-slate-700 group hover:border-slate-500 transition';
+                div.innerHTML = `
+                    <button onclick="carregarPerfil(${p.id})" class="flex items-center gap-2 flex-1 text-left">
+                        <div class="w-4 h-4 rounded-full border border-slate-500" style="background:${p.cores['--primary']}"></div>
+                        <span class="text-sm font-medium text-slate-200">${p.nome}</span>
+                    </button>
+                    <button onclick="apagarPerfil(${p.id})" class="text-slate-500 hover:text-red-400 px-2 opacity-0 group-hover:opacity-100 transition"><i class="fas fa-trash text-xs"></i></button>
+                `;
+                lista.appendChild(div);
+            });
+        }
+
+        window.onload = () => {
+            const temaAtivo = JSON.parse(localStorage.getItem('temaAtivo'));
+            if (temaAtivo) { aplicarCores(temaAtivo); } else { mudarTema('original'); }
+            renderizarPerfisSalvos();
+        };
+    </script>
+</body>
+</html>

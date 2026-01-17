@@ -1,0 +1,127 @@
+{% extends 'base_manager.html' %}
+
+{% block content %}
+<div class="max-w-[1600px] mx-auto p-6 space-y-8 pb-20">
+
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-white tracking-tight">Dashboard</h1>
+            <p class="text-gray-400 text-sm">Bem-vindo ao centro de controlo, Admin.</p>
+        </div>
+        <a href="{% url 'criar_produto' %}" class="bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-purple-900/20 transition flex items-center gap-2">
+            <i class="fas fa-plus"></i> Novo Produto
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="bg-slate-800/50 border border-white/5 p-6 rounded-2xl relative overflow-hidden group">
+            <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition text-6xl text-green-500"><i class="fas fa-euro-sign"></i></div>
+            <p class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Faturação Total</p>
+            <h3 class="text-3xl font-bold text-white">€ {{ total_faturado|floatformat:2 }}</h3>
+        </div>
+
+        <div class="bg-slate-800/50 border border-white/5 p-6 rounded-2xl relative overflow-hidden group">
+            <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition text-6xl text-blue-500"><i class="fas fa-shopping-bag"></i></div>
+            <p class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Total Encomendas</p>
+            <h3 class="text-3xl font-bold text-white">{{ total_pedidos }}</h3>
+        </div>
+
+        <div class="bg-slate-800/50 border border-red-500/20 p-6 rounded-2xl relative overflow-hidden group">
+            <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition text-6xl text-red-500"><i class="fas fa-clock"></i></div>
+            <p class="text-red-400 text-xs font-bold uppercase tracking-wider mb-1">Pendentes / A Processar</p>
+            <h3 class="text-3xl font-bold text-white">{{ pedidos_pendentes }}</h3>
+        </div>
+
+        <div class="bg-slate-800/50 border border-white/5 p-6 rounded-2xl relative overflow-hidden group">
+            <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition text-6xl text-purple-500"><i class="fas fa-truck"></i></div>
+            <p class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Enviados</p>
+            <h3 class="text-3xl font-bold text-white">{{ pedidos_enviados }}</h3>
+        </div>
+    </div>
+
+    <div class="bg-black/40 backdrop-blur-xl border border-white/5 rounded-3xl overflow-hidden">
+        <div class="p-6 border-b border-white/5">
+            <h2 class="text-xl font-bold text-white">📦 Últimas Encomendas</h2>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-gray-400">
+                <thead class="bg-white/5 text-xs uppercase font-bold text-gray-300">
+                    <tr>
+                        <th class="px-6 py-4">ID</th>
+                        <th class="px-6 py-4">Cliente</th>
+                        <th class="px-6 py-4">Data</th>
+                        <th class="px-6 py-4">Total</th>
+                        <th class="px-6 py-4">Estado</th>
+                        <th class="px-6 py-4 text-right">Ação</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5">
+                    {% for pedido in pedidos %}
+                    <tr class="hover:bg-white/5 transition">
+                        <td class="px-6 py-4">#{{ pedido.id }}</td>
+                        <td class="px-6 py-4 font-bold text-white">{{ pedido.cliente.username }}</td>
+                        <td class="px-6 py-4">{{ pedido.data_pedido|date:"d M Y H:i" }}</td>
+                        <td class="px-6 py-4 text-green-400 font-bold">€ {{ pedido.get_total_carrinho }}</td>
+                        <td class="px-6 py-4">
+                            {% if pedido.enviado %}
+                                <span class="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30">Enviado 🚚</span>
+                            {% else %}
+                                <span class="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-xs font-bold border border-yellow-500/30">Pendente ⏳</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <a href="{% url 'processar_pedido' pedido.id %}" class="text-xs font-bold px-4 py-2 rounded-lg transition 
+                                {% if pedido.enviado %} bg-gray-700 text-gray-400 hover:bg-gray-600 {% else %} bg-blue-600 text-white hover:bg-blue-500 {% endif %}">
+                                {% if pedido.enviado %}Marcar Pendente{% else %}Processar Envio{% endif %}
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="px-6 py-8 text-center text-gray-500">Sem encomendas registadas ainda.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="bg-black/40 backdrop-blur-xl border border-white/5 rounded-3xl overflow-hidden mt-8">
+        <div class="p-6 border-b border-white/5 flex justify-between items-center">
+            <h2 class="text-xl font-bold text-white">👕 Os teus Produtos</h2>
+            <span class="text-xs font-bold bg-white/10 px-3 py-1 rounded-full text-gray-300">{{ produtos.count }} produtos</span>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-gray-400">
+                <tbody class="divide-y divide-white/5">
+                    {% for produto in produtos %}
+                    <tr class="hover:bg-white/5 transition group">
+                        <td class="px-6 py-4 w-20">
+                            {% if produto.imagem %}
+                            <img src="{{ produto.imagem.url }}" class="w-12 h-12 rounded-lg object-cover bg-gray-700">
+                            {% else %}
+                            <div class="w-12 h-12 rounded-lg bg-gray-800 flex items-center justify-center text-xl">🧸</div>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="font-bold text-white">{{ produto.nome }}</div>
+                            <div class="text-xs text-gray-500">{{ produto.get_categoria_display }} • {{ produto.idade }}</div>
+                        </td>
+                        <td class="px-6 py-4 font-bold text-white">€ {{ produto.preco }}</td>
+                        <td class="px-6 py-4 text-right">
+                            <a href="{% url 'editar_produto' produto.id %}" class="inline-block text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 px-3 py-2 rounded-lg transition">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'apagar_produto' produto.id %}" class="inline-block text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 px-3 py-2 rounded-lg transition ml-2" onclick="return confirm('Tens a certeza?')">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="min-h-[80vh] flex items-center justify-center bg-[#FFFAE5]/30 py-12 px-4">
+    
+    <div class="w-full max-w-md bg-white p-8 md:p-10 rounded-[2.5rem] shadow-xl border border-gray-100 relative overflow-hidden">
+        
+        <div class="absolute top-0 right-0 w-32 h-32 bg-[#FFD028]/20 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none"></div>
+        
+        <div class="text-center mb-8 relative z-10">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Criar Conta 🚀</h1>
+            <p class="text-gray-400 text-sm">Junta-te à família Mangas Traquinas.</p>
+        </div>
+
+        {% if form.non_field_errors %}
+            <div class="bg-red-50 text-red-500 p-4 rounded-xl text-sm font-bold mb-6 text-center border border-red-100">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <form method="post" class="space-y-5 relative z-10" novalidate>
+            {% csrf_token %}
+            
+            {% for field in form %}
+            <div>
+                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 ml-1">
+                    {{ field.label }}
+                </label>
+                
+                {% if field.errors %}
+                    {% render_field field class="w-full bg-red-50 border-2 border-red-300 text-red-900 rounded-2xl px-5 py-3 focus:outline-none focus:border-red-500 transition" placeholder=field.label %}
+                {% else %}
+                    {% render_field field class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3 focus:bg-white focus:border-[#0087CA] focus:ring-4 focus:ring-blue-50 outline-none transition font-medium text-gray-700" placeholder=field.label %}
+                {% endif %}
+
+                {% if field.errors %}
+                    <div class="mt-2 flex items-center gap-1 text-xs text-red-500 font-bold ml-1">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {% for error in field.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                {% if field.help_text and not field.errors %}
+                    <p class="text-[10px] text-gray-400 mt-1 ml-1">{{ field.help_text }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="w-full bg-[#FFD028] text-black font-bold py-4 rounded-full shadow-lg hover:bg-[#EBC024] hover:shadow-xl transition transform active:scale-95 mt-4 text-lg">
+                Finalizar Registo ✨
+            </button>
+        </form>
+
+        <p class="mt-8 text-center text-sm text-gray-400 font-medium">
+            Já tens conta? <a href="{% url 'login' %}" class="text-[#0087CA] font-bold hover:underline">Entra aqui.</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

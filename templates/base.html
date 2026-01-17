@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mangas Traquinas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Quicksand', sans-serif; background-color: #ffffff; color: #374151; }
+        .zippy-yellow { background-color: #FFD028; color: #1F2937; }
+        .zippy-yellow:hover { background-color: #EBC024; }
+        
+        .nav-link { 
+            font-weight: 700; font-size: 15px; color: #4B5563; 
+            transition: color 0.2s; padding: 8px 16px; border-radius: 99px;
+        }
+        .nav-link:hover { color: #000; background-color: #F3F4F6; }
+        
+        /* Remove a barra de scroll nas miniaturas */
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <div class="bg-[#0087CA] text-white text-xs font-bold text-center py-2 tracking-wide">
+        🚀 ENTREGAS GRÁTIS EM COMPRAS > 30€ 🚀
+    </div>
+
+    <nav class="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-[1440px] mx-auto px-6 h-20 flex items-center justify-between">
+            
+            <a href="{% url 'home' %}" class="flex items-center gap-2 group">
+                <div class="bg-[#FFD028] text-black w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition">M</div>
+                <span class="text-xl font-bold tracking-tight text-gray-800">Mangas<span class="text-[#0087CA]">Traquinas</span></span>
+            </a>
+
+            <div class="hidden md:flex gap-4">
+                <a href="{% url 'home' %}?categoria=bebe" class="nav-link hover:text-[#0087CA]">Bebé 👶</a>
+                <a href="{% url 'home' %}?categoria=rapaz" class="nav-link hover:text-[#0087CA]">Rapaz 👦</a>
+                <a href="{% url 'home' %}?categoria=rapariga" class="nav-link hover:text-[#0087CA]">Rapariga 👧</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                
+                {% if user.is_staff %}
+                    <a href="{% url 'dashboard' %}" class="text-xs font-bold border-2 border-gray-200 px-3 py-1.5 rounded-full hover:border-gray-400 text-gray-500 transition">⚙️ Manager</a>
+                {% endif %}
+
+                <a href="{% url 'carrinho' %}" class="w-10 h-10 rounded-full bg-gray-50 hover:bg-[#FFD028] transition flex items-center justify-center text-gray-600">
+                    <i class="fas fa-shopping-basket"></i>
+                </a>
+
+                {% if user.is_authenticated %}
+                    <div class="relative group h-full flex items-center">
+                        <button class="w-10 h-10 rounded-full bg-blue-50 text-[#0087CA] hover:bg-[#0087CA] hover:text-white transition flex items-center justify-center font-bold">
+                            {{ user.username|make_list|first|upper }}
+                        </button>
+                        
+                        <div class="absolute right-0 top-full pt-2 w-56 hidden group-hover:block z-50">
+                            <div class="bg-white border border-gray-100 shadow-xl rounded-2xl overflow-hidden py-2">
+                                <div class="px-5 py-3 border-b border-gray-50">
+                                    <p class="text-xs text-gray-400 font-bold uppercase">Olá,</p>
+                                    <p class="text-sm font-bold text-gray-800">{{ user.username }}</p>
+                                </div>
+                                
+                                <a href="{% url 'meus_pedidos' %}" class="block px-5 py-3 text-sm hover:bg-gray-50 font-medium text-gray-600">Os meus pedidos</a>
+                                
+                                <form action="{% url 'logout' %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="w-full text-left px-5 py-3 text-sm text-red-500 font-bold hover:bg-red-50">Sair</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{% url 'login' %}" class="bg-[#FFD028] text-black px-6 py-2.5 rounded-full font-bold text-sm shadow-sm hover:bg-[#EBC024] transition">Entrar</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="bg-gray-50 border-t border-gray-200 py-12 mt-16 text-center">
+        <div class="text-sm text-gray-400 font-medium">© 2024 Mangas Traquinas. Feito com alegria.</div>
+    </footer>
+</body>
+</html>

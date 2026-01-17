@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-6 py-12">
+    <h1 class="text-3xl font-bold mb-8">O teu Carrinho 🛒</h1>
+
+    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+        {% for item in itens %}
+        <div class="flex items-center gap-4 p-6 border-b border-gray-50">
+            <img src="{{ item.produto.imagem.url }}" class="w-20 h-20 object-cover rounded-xl bg-gray-50">
+            <div class="flex-grow">
+                <h3 class="font-bold text-gray-800">{{ item.produto.nome }}</h3>
+                <p class="text-sm text-gray-500">{{ item.produto.get_categoria_display }}</p>
+            </div>
+            <div class="text-center">
+                <p class="text-xs text-gray-400">Qtd</p>
+                <p class="font-bold">{{ item.quantidade }}</p>
+            </div>
+            <div class="font-bold text-lg w-24 text-right">€ {{ item.get_total }}</div>
+        </div>
+        {% empty %}
+        <div class="p-12 text-center text-gray-400">
+            <p>O carrinho está vazio 😢</p>
+            <a href="{% url 'home' %}" class="text-[#0087CA] font-bold mt-2 inline-block">Ir às compras</a>
+        </div>
+        {% endfor %}
+
+        {% if itens %}
+        <div class="p-8 bg-gray-50 flex flex-col items-end gap-4">
+            <div class="text-2xl font-bold text-gray-900">Total: € {{ pedido.get_total_carrinho }}</div>
+            <a href="{% url 'checkout' %}" class="bg-black text-white px-8 py-3 rounded-full font-bold hover:bg-gray-800 transition">
+                Finalizar Compra &rarr;
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
