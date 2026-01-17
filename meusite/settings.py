@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-r&rk!*bde)rptqu2ht+$80t35!5^3e=_r(g7b(k$heync_#(3^
 DEBUG = True 
 
 # Permite que a Vercel mostre o site
-ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
